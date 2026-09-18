@@ -24,7 +24,6 @@ export function useCategory() {
 
   const createCategory = async (category: CreateCategoryDto) => {
     try {
-      console.log(category);
       const data = await categoryService.create(category);
       setCategories((prev) => [data, ...prev]);
       return ok();

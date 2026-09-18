@@ -1,8 +1,7 @@
 import { HashRouter, Routes, Route } from "react-router";
-import HomePage from "./pages/Home";
 import CategoriesPage from "./pages/Categories";
+import HomePage from "./pages/Home";
 import { AppContainer } from "./components/layout/AppContainer";
-
 export default function AppRouter() {
   return (
     <HashRouter>

@@ -43,14 +43,7 @@ export default defineConfig({
   },
 
   optimizeDeps: {
-    include: [
-      "react",
-      "react-dom",
-      "react-router",
-      "@nivo/core",
-      "@nivo/pie",
-      "lucide-react",
-    ],
+    include: ["react", "react-dom", "react-router", "@nivo/core", "@nivo/pie"],
     exclude: ["better-sqlite3"],
   },
 });

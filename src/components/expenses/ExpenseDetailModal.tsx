@@ -59,8 +59,6 @@ export function ExpenseDetailModal({
 
   const categorySelectItems = getSelectItems(categories, "category", "id");
 
-  const defaultSelectValue = null;
-
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -104,16 +102,21 @@ export function ExpenseDetailModal({
             </div>
 
             {/* Formulario para agregar detalle */}
+            {/* Formulario para agregar detalle */}
             <form onSubmit={handleSubmit} className="my-3">
               <input type="hidden" name="expense_id" value={expense.id} />
-              <FieldGroup className="grid  grid-cols-4">
+
+              {/* grid-cols-1 para móvil, grid-cols-2 en sm, y grid-cols-4 en lg */}
+              <FieldGroup className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
                 <Field>
                   <Input
                     name="description"
                     placeholder="Descripción"
                     required
+                    className="w-full"
                   />
                 </Field>
+
                 <Field>
                   <Input
                     name="value"
@@ -121,22 +124,19 @@ export function ExpenseDetailModal({
                     step="0.01"
                     placeholder="Monto"
                     required
-                  ></Input>
+                    className="w-full"
+                  />
                 </Field>
+
                 <Field>
-                  <Select
-                    items={categorySelectItems}
-                    defaultValue={defaultSelectValue}
-                    name="category_id"
-                  >
+                  <Select items={categorySelectItems} name="category_id">
                     <SelectTrigger className="w-full">
-                      <SelectValue />
+                      <SelectValue placeholder="Selecciona categoría" />
                     </SelectTrigger>
 
                     <SelectContent>
                       <SelectGroup>
-                        <SelectLabel>Categorias</SelectLabel>
-
+                        <SelectLabel>Categorías</SelectLabel>
                         {categorySelectItems.map((item) => (
                           <SelectItem key={item.value} value={item.value}>
                             {item.label}
@@ -146,8 +146,11 @@ export function ExpenseDetailModal({
                     </SelectContent>
                   </Select>
                 </Field>
+
                 <Field>
-                  <Button type="submit">Guardar</Button>
+                  <Button type="submit" className="w-full">
+                    Guardar
+                  </Button>
                 </Field>
               </FieldGroup>
             </form>

@@ -105,8 +105,6 @@ export class ExpenseRepository {
   }
 
   createDetail(dto: CreateExpenseDetailDto) {
-    console.log(dto);
-
     const createDetailStmt = db.prepare(
       `INSERT INTO expense_details (
         description, 

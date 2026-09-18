@@ -44,7 +44,6 @@ function CategoriesPage() {
 
   const onDelete = async (categoryId: number) => {
     const result = await removeCategory(categoryId);
-    console.log(result);
     if (!result.success) {
       toast.add({
         type: "error",
@@ -55,42 +54,46 @@ function CategoriesPage() {
   };
 
   return (
-    <div className="flex flex-col gap-6">
-      <form className="w-[250px]  flex flex-col gap-2">
-        <Field>
-          <FieldLabel htmlFor="category">Categoría</FieldLabel>
-          <Input
-            id="category"
-            type="text"
-            placeholder="Ingresa la categoría"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-          />
-        </Field>
-        <Field>
-          <Button type="button" onClick={handleSubmit}>
-            Guardar
-          </Button>
-        </Field>
-        {error && <p className="text-red-500">{error}</p>}
-      </form>
-      <div className="flex w-full max-w-md flex-col gap-2">
-        {categories.map((c) => (
-          <Item variant="outline" key={c.id}>
-            <ItemContent>
-              <ItemTitle>{c.category}</ItemTitle>
-            </ItemContent>
-            <ItemActions>
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={() => onDelete(c.id)}
-              >
-                Eliminar
+    <div className="min-h-screen bg-neutral-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 p-6 md:p-10 font-geist">
+      <div className="max-w-7xl mx-auto space-y-8">
+        <div className="flex flex-col gap-6">
+          <form className="w-[250px]  flex flex-col gap-2">
+            <Field>
+              <FieldLabel htmlFor="category">Categoría</FieldLabel>
+              <Input
+                id="category"
+                type="text"
+                placeholder="Ingresa la categoría"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+              />
+            </Field>
+            <Field>
+              <Button type="button" onClick={handleSubmit}>
+                Guardar
               </Button>
-            </ItemActions>
-          </Item>
-        ))}
+            </Field>
+            {error && <p className="text-red-500">{error}</p>}
+          </form>
+          <div className="flex w-full max-w-md flex-col gap-2">
+            {categories.map((c) => (
+              <Item variant="outline" key={c.id}>
+                <ItemContent>
+                  <ItemTitle>{c.category}</ItemTitle>
+                </ItemContent>
+                <ItemActions>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => onDelete(c.id)}
+                  >
+                    Eliminar
+                  </Button>
+                </ItemActions>
+              </Item>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

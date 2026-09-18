@@ -10,8 +10,10 @@ export function AppContainer({ children }: AppContainerProps) {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <SidebarTrigger />
-      <div className="mx-auto my-8 w-[80%] p-4">{children}</div>;
+      <main className="flex-1 w-full relative">
+        <SidebarTrigger className="fixed md:absolute top-4 left-4 z-10 bg-background/20 backdrop-blur-sm rounded-md" />
+        {children}
+      </main>
     </SidebarProvider>
   );
 }
