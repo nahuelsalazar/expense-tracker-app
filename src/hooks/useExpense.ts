@@ -11,8 +11,8 @@ import { ok, fail } from "../../shared/interfaces/expense.interface";
 
 export function useExpense() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
-  const [chartData, setChartData] = useState<
-    { label: string; value: number }[]
+  const [summaryData, setSummaryData] = useState<
+    { name: string; value: number }[]
   >([]);
   const [initialLoadError, setInitialLoadError] = useState<string | null>(null);
   const [selectedExpense, setSelectedExpense] =
@@ -41,7 +41,7 @@ export function useExpense() {
     ) => {
       try {
         const result = await expenseService.getSummaryByCategories(year, month);
-        setChartData(result);
+        setSummaryData(result);
       } catch (error) {
         return fail(error, "Fallo al obtener datos del grafico");
       }
@@ -143,7 +143,7 @@ export function useExpense() {
     removeExpenseDetail,
     loadMockExpenses,
     clearSelectedExpense,
-    chartData,
+    summaryData,
     getSummaryByCategories,
   };
 }

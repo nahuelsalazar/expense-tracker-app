@@ -23,7 +23,7 @@ function HomePage() {
     selectedExpense,
     clearSelectedExpense,
     loadExpenses,
-    chartData,
+    summaryData,
     getSummaryByCategories,
   } = useExpense();
 
@@ -73,7 +73,7 @@ function HomePage() {
           />
         </div>
         <div>
-          <ExpenseChart data={chartData} />
+          <ExpenseChart data={summaryData} />
         </div>
       </div>
     </>
