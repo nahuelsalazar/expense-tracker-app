@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useCategory } from "@/hooks/useCategory";
 import { Input } from "@/components/ui/input";
-import { Field, FieldLabel } from "@/components/ui/field";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
 import {
   Item,
@@ -14,32 +14,22 @@ import { toast } from "@/components/ui/toast";
 function CategoriesPage() {
   const { createCategory, categories, removeCategory } = useCategory();
   const [category, setCategory] = useState("");
-  const [error, setError] = useState<string | undefined>("");
-
-  const validate = () => {
-    if (category.length < 4) {
-      return "La categoria debe tener como minimo 4 caracteres";
-    }
-
-    return null;
-  };
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
 
   const handleSubmit = async () => {
-    const validation = validate();
-
-    if (validation) {
-      setError(validation);
-      return null;
-    }
-
     const result = await createCategory({ category });
-    if (!result.success) {
-      setError(result.error);
-      return;
-    }
 
-    setError("");
-    setCategory("");
+    if (result.success) {
+      setFieldErrors({});
+      setCategory("");
+    } else {
+      setFieldErrors(result.fieldErrors);
+      toast.add({
+        type: "error",
+        description: result.globalError,
+        priority: "high",
+      });
+    }
   };
 
   const onDelete = async (categoryId: number) => {
@@ -47,7 +37,7 @@ function CategoriesPage() {
     if (!result.success) {
       toast.add({
         type: "error",
-        description: result.error,
+        description: result.globalError,
         priority: "high",
       });
     }
@@ -67,13 +57,15 @@ function CategoriesPage() {
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
               />
+              {fieldErrors.category && (
+                <FieldError>{fieldErrors.category[0]}</FieldError>
+              )}
             </Field>
             <Field>
               <Button type="button" onClick={handleSubmit}>
                 Guardar
               </Button>
             </Field>
-            {error && <p className="text-red-500">{error}</p>}
           </form>
           <div className="flex w-full max-w-md flex-col gap-2">
             {categories.map((c) => (

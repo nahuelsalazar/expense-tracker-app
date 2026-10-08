@@ -1,54 +1,55 @@
-import { memo, useState, FormEvent } from "react";
-import { Field, FieldGroup } from "@/components/ui/field";
+import { Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/toast";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useCategory } from "@/hooks/useCategory";
+import { useState } from "react";
+import { useCategory } from "../../hooks/useCategory";
+import { getSelectItems } from "../../lib/utils";
+
 import {
   CreateExpenseDto,
-  Expense,
   Result,
+  Expense,
 } from "shared/interfaces/expense.interface";
-import { getSelectItems } from "@/lib/utils";
 
-export interface ExpenseFormProps {
-  onAddExpense: (expense: CreateExpenseDto) => Promise<Result<Expense>>;
+interface ExpenseFormProps {
+  onCreateExpense: (expense: CreateExpenseDto) => Promise<Result<Expense>>;
 }
 
-const DEFAULT_VALUES = {
+const DEFAULTS = {
   category_id: null,
   value: "",
   description: "",
   expense_date: "",
 };
 
-export const ExpenseForm = memo(({ onAddExpense }: ExpenseFormProps) => {
-  const [error, setError] = useState<string | undefined>("");
+export function ExpenseForm({ onCreateExpense }: ExpenseFormProps) {
   const [categoryId, setCategoryId] = useState<number | null>(
-    DEFAULT_VALUES.category_id,
+    DEFAULTS.category_id,
   );
   const [expenseValue, setExpenseValue] = useState("");
-  const [expenseDate, setExpenseDate] = useState<string>(
-    DEFAULT_VALUES.expense_date,
-  );
-  const [expenseDesc, setExpenseDesc] = useState<string>(
-    DEFAULT_VALUES.description,
-  );
+  const [expenseDate, setExpenseDate] = useState(DEFAULTS.expense_date);
+  const [expenseDesc, setExpenseDesc] = useState(DEFAULTS.description);
 
   const { categories } = useCategory();
   const categorySelectItems = getSelectItems(categories, "category", "id");
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
+  const handleSubmit = async () => {
     const expense = {
       description: expenseDesc,
       value: Number(expenseValue),
@@ -56,89 +57,98 @@ export const ExpenseForm = memo(({ onAddExpense }: ExpenseFormProps) => {
       category_id: categoryId,
     };
 
-    const result = await onAddExpense(expense);
+    const result = await onCreateExpense(expense);
 
     if (!result.success) {
-      setError(result.error);
+      toast.add({
+        type: "error",
+        description: result.globalError,
+        priority: "high",
+      });
+
       return;
     }
 
     resetForm();
-    setError(undefined);
   };
 
   const resetForm = () => {
-    setCategoryId(DEFAULT_VALUES.category_id);
-    setExpenseDate(DEFAULT_VALUES.expense_date);
-    setExpenseDesc(DEFAULT_VALUES.description);
-    setExpenseValue(DEFAULT_VALUES.value);
+    setCategoryId(DEFAULTS.category_id);
+    setExpenseDate(DEFAULTS.expense_date);
+    setExpenseDesc(DEFAULTS.description);
+    setExpenseValue(DEFAULTS.value);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="my-3">
-      <div className="flex flex-col gap-1.5 my-3">
-        <div className="leading-none font-medium">Nuevo gasto</div>
-      </div>
-      <FieldGroup className="grid  grid-cols-5">
-        <Field>
+    <Card className="lg:col-span-1 shadow-sm border-zinc-200 dark:border-zinc-800">
+      <CardHeader>
+        <CardTitle className="text-lg">Nuevo Gasto</CardTitle>
+        <CardDescription>Registra una nueva transacción</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Descripción</label>
           <Input
+            placeholder="Ej. Supermercado"
+            className="focus-visible:ring-zinc-900"
             onChange={(e) => setExpenseDesc(e.target.value)}
             value={expenseDesc}
-            placeholder="Descripción"
-            required
           />
-        </Field>
-        <Field>
+        </div>
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Monto</label>
           <Input
+            type="number"
+            placeholder="$ 0.00"
+            className="focus-visible:ring-zinc-900"
             onChange={(e) => setExpenseValue(e.target.value)}
             value={expenseValue}
-            type="number"
-            step="0.01"
-            placeholder="Monto"
-            required
-          ></Input>
-        </Field>
-        <Field>
-          <Input
-            value={expenseDate}
-            onChange={(e) => setExpenseDate(e.target.value)}
-            type="date"
-            required
           />
-        </Field>
-        <Field>
+        </div>
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Fecha</label>
+          <div className="relative">
+            <Input
+              type="date"
+              className="focus-visible:ring-zinc-900 w-full"
+              value={expenseDate}
+              onChange={(e) => setExpenseDate(e.target.value)}
+              required
+            />
+          </div>
+        </div>
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Categoría</label>
           <Select
             items={categorySelectItems}
             value={categoryId}
             name="category_id"
             onValueChange={(v) => setCategoryId(v)}
           >
-            <SelectTrigger className="w-full">
-              <SelectValue />
+            <SelectTrigger className="w-full focus:ring-zinc-900">
+              <SelectValue placeholder="Selecciona..." />
             </SelectTrigger>
-
             <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Categorias</SelectLabel>
-
-                {categorySelectItems.map((item) => (
-                  <SelectItem key={item.value} value={item.value}>
-                    {item.label}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
+              {categorySelectItems.map((item) => (
+                <SelectItem key={item.value} value={item.value}>
+                  {item.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
-        </Field>
-        <Field>
-          <Button type="submit">Guardar</Button>
-        </Field>
-      </FieldGroup>
-
-      {/* Mostrar el error de creación justo debajo del formulario */}
-      {error && (
-        <p className="mt-2 text-sm font-medium text-destructive">{error}</p>
-      )}
-    </form>
+        </div>
+        <Button
+          type="button"
+          className="w-full mt-4 bg-zinc-900 hover:bg-zinc-800 text-white"
+          onClick={handleSubmit}
+          disabled={
+            !expenseDesc || !expenseDate || !expenseValue || !categoryId
+          }
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Agregar Gasto
+        </Button>
+      </CardContent>
+    </Card>
   );
-});
+}

@@ -4,23 +4,32 @@ import {
   CreateExpenseDetailDto,
   CreateExpenseDto,
 } from "../../../../shared/interfaces/expense.interface";
+import { jsonResponse } from "../../../utils";
 
 export class ExpenseService {
   expenseRepo = new ExpenseRepository();
-  async findAll() {
-    return this.expenseRepo.findAll();
-  }
 
   async findAllByPeriod(year: number, month: number) {
     return this.expenseRepo.findAllByPeriod(year, month);
   }
 
   async findOne(expense_id: number) {
-    return this.expenseRepo.findOne(expense_id);
+    try {
+      const data = this.expenseRepo.findOne(expense_id);
+      return jsonResponse(200, data);
+    } catch (error) {
+      return jsonResponse(500);
+    }
   }
 
   async create(dto: CreateExpenseDto) {
-    return this.expenseRepo.create(dto);
+    try {
+      const data = this.expenseRepo.create(dto);
+      return jsonResponse(201, data);
+    } catch (error) {
+      console.log(error);
+      return jsonResponse(500);
+    }
   }
 
   async createDetail(dto: CreateExpenseDetailDto) {
@@ -29,15 +38,16 @@ export class ExpenseService {
   }
 
   deleteExpense(id: number) {
-    return this.expenseRepo.deleteExpense(id);
+    try {
+      const data = this.expenseRepo.deleteExpense(id);
+      return jsonResponse(200, data);
+    } catch (error) {
+      return jsonResponse(500);
+    }
   }
 
   deleteDetail(id: number) {
     return this.expenseRepo.deleteDetail(id);
-  }
-
-  loadMock() {
-    return this.expenseRepo.fill();
   }
 
   getSummaryByCategories(year: number, month: number) {

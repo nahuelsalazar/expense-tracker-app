@@ -11,9 +11,16 @@ export class CategoryRepository {
       .all() as Category[];
   }
 
+  findOne(category: string) {
+    const result = db
+      .prepare("SELECT * FROM categories WHERE category LIKE ?")
+      .get(category);
+    return result;
+  }
+
   create(dto: CreateCategoryDto) {
     const stmt = db.prepare("INSERT INTO categories (category) VALUES (?)");
-    const result = stmt.run(dto.category.toLocaleUpperCase());
+    const result = stmt.run(dto.category);
     return {
       ...dto,
       id: result.lastInsertRowid,

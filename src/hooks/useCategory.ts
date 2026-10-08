@@ -35,9 +35,6 @@ export function useCategory() {
   const removeCategory = async (categoryId: number) => {
     try {
       const data = await categoryService.remove(categoryId);
-      if (data.error) {
-        throw new Error(data.error);
-      }
       loadCategories();
       return ok();
     } catch (error) {

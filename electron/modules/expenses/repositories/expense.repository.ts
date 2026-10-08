@@ -6,10 +6,6 @@ import {
 } from "../../../../shared/interfaces/expense.interface";
 
 export class ExpenseRepository {
-  findAll() {
-    //return db.prepare("SELECT * FROM expenses").all() as Expense[];
-  }
-
   getPeriod(year: number, month: number) {
     const start = `${year}-${String(month).padStart(2, "0")}-01`;
 
@@ -156,26 +152,6 @@ export class ExpenseRepository {
   deleteDetail(detail_id: number) {
     const stmt = db.prepare("DELETE FROM expense_details WHERE id = ?");
     return stmt.run(detail_id);
-  }
-
-  fill() {
-    const stmt = db.prepare(`
-      INSERT INTO expenses (description, value, expense_date)
-      VALUES
-      ('Supermercado', 12500.50, CURRENT_TIMESTAMP),
-      ('Transporte', 850.00, CURRENT_TIMESTAMP),
-      ('Alquiler', 250000.00, CURRENT_TIMESTAMP),
-      ('Internet', 15000.00, CURRENT_TIMESTAMP),
-      ('Café', 1200.00, CURRENT_TIMESTAMP),
-      ('Gasolina', 18000.75, CURRENT_TIMESTAMP),
-      ('Restaurante', 9800.00, CURRENT_TIMESTAMP),
-      ('Farmacia', 4300.25, CURRENT_TIMESTAMP),
-      ('Suscripción streaming', 6500.00, CURRENT_TIMESTAMP),
-      ('Ropa', 22000.00, CURRENT_TIMESTAMP);
-      `);
-
-    stmt.run();
-    return this.findAll();
   }
 
   getSummaryByCategories(year: number, month: number) {

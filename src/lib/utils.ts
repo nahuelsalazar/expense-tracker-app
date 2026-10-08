@@ -32,3 +32,19 @@ export function getSelectItems(items: any[], label: string, value: string) {
     })),
   ];
 }
+
+export function getMonths() {
+  const months = Array.from({ length: 12 }, (_, i) => {
+    const date = new Date(2026, i, 1);
+    const text = new Intl.DateTimeFormat("es-ES", { month: "long" }).format(
+      date,
+    );
+
+    return {
+      label: text.charAt(0).toUpperCase() + text.slice(1),
+      value: String(i + 1),
+    };
+  });
+
+  return months;
+}

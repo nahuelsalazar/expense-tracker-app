@@ -73,7 +73,7 @@ export function ExpenseDetailModal({
     });
 
     if (!result.success) {
-      setErrors((prev) => ({ ...prev, createDetail: result.error }));
+      setErrors((prev) => ({ ...prev, createDetail: result.globalError }));
     } else {
       form.reset();
       setErrors((prev) => ({ ...prev, createDetail: undefined }));

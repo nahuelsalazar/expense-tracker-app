@@ -68,8 +68,6 @@ export function useExpense() {
     async (expense: CreateExpenseDto): Promise<Result<Expense>> => {
       try {
         const data = await expenseService.create(expense);
-        setExpenses((prev) => [...prev, data]);
-        getSummaryByCategories();
         return ok(data);
       } catch (err) {
         return fail(err, "Error al crear el gasto");
@@ -83,7 +81,6 @@ export function useExpense() {
       try {
         await expenseService.createDetail(detail);
         await getOneExpense(detail.expense_id);
-        getSummaryByCategories();
         return ok();
       } catch (err) {
         return fail(err, "Error al crear el detalle");
@@ -96,8 +93,6 @@ export function useExpense() {
     async (id: number): Promise<Result<number>> => {
       try {
         await expenseService.remove(id);
-        setExpenses((prev) => prev.filter((e) => e.id !== id));
-        getSummaryByCategories();
         return ok(id);
       } catch (err) {
         return fail(err, "Error al eliminar");
